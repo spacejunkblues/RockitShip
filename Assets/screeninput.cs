@@ -61,13 +61,13 @@ public class screeninput : MonoBehaviour, IPointerClickHandler
         ThePlayer_pcl = GameObject.Find("ThePlayer").GetComponent<PlayerController>();
 
         if (clickaboveship(Input.mousePosition))
-            ThePlayer_pcl.MoveUpHold();
+            ThePlayer_pcl.MoveUp();
         else
-            ThePlayer_pcl.MoveDownHold();
+            ThePlayer_pcl.MoveDown();
     }
 
     public void clickup()
     {
-        GameObject.Find("ThePlayer").GetComponent<PlayerController>().StopRotating();
+        //GameObject.Find("ThePlayer").GetComponent<PlayerController>().StopRotating();
     }
 }

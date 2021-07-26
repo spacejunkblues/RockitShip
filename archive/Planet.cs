@@ -6,6 +6,7 @@ using System.Collections;
 
 public class Planet : MonoBehaviour
 {
+    GameObject ThePlayer_obj;
     Rigidbody2D planet_rgb;
     Rigidbody2D[] allplanets_rgb;
     Rigidbody2D player_rgb;
@@ -14,32 +15,37 @@ public class Planet : MonoBehaviour
     private float Gravity_flt;
     private int numofplanets_int; //Number of planets
     private int linenum_int; //this is the planets number. 1,2,3, etc
+    public bool inplay_bol;
+   // private bool[] planetgravity_bol;       //true if the planet is on screen. then it gives off a gravity field
 
     //called by player controller
     //Adds a force in the direction of the ship
-    public void Boost(int dir,int power)
+    public void Boost(float dir,float power)
     {
         Vector2 vect;
-        //Debug.Log("made it to "+this.name+ " with a linenum of " + linenum_int);
         if(linenum_int==planetlocked_int)
         {
-            Debug.Log("Boosting off " + this.name);
             vect.x = -power * Mathf.Cos(dir / 57.33f);//dividing by 57.33 turns degrees into radians
             vect.y = 0;
             planet_rgb.AddForce(vect);
+           // Debug.Log("boost planet");
         }
     }
 
     //turns off the gravitational field
     public void stopgravity()
     {
-        Gravity_flt = 0;
+         Gravity_flt = 0; //A01 A02
+       // planetgravity_bol[linenum_int - 1] = false;
+        //GameObject.Find("ThePlayer").GetComponent<PlayerController>().stopgravity(linenum_int); //A03
     }
 
     //turns on the gravitational field
     public void startgravity()
     {
-        Gravity_flt = 1;
+         Gravity_flt = 1;//A01 A02
+       // planetgravity_bol[linenum_int - 1] = true;
+        //GameObject.Find("ThePlayer").GetComponent<PlayerController>().startgravity(linenum_int); //a03
     }
 
     public void stopgame()
@@ -79,36 +85,41 @@ public class Planet : MonoBehaviour
         GetComponent<SpriteRenderer>().sprite = planet_spr;
 
         //randomly set size of planet
-        random_flt = Random.Range(.3f, .6f);
+        random_flt = Random.Range(.6f, 1.2f); //A02    1.2 means radius of planet will be 1.2; if you make size bigger, change planet reset to ensure planet reset's to the right of "planetin"
+      //  random_flt = Random.Range(.3f, .6f);//   A01
         GetComponent<Transform>().localScale = new Vector3(random_flt, random_flt, 1);
 
+        // Debug.Log("position" + prevplanet_rgb.position+" prev name "+prevplanet_rgb.name+" My name: "+this.name);
         //Sets X location of planet
-        if (prevplanet_rgb.position.x < 10) vect.x = 11;
-        else vect.x = prevplanet_rgb.position.x +  Random.Range(1F, 5F);
+        if (prevplanet_rgb.position.x < 10) vect.x = 12;  //A01
+        //else vect.x = prevplanet_rgb.position.x +  Random.Range(1F, 5F); //A01
+        else vect.x = prevplanet_rgb.position.x + Random.Range(1F, 15F) + 15;  //A02
 
         //Set Y location of planet
         //random number from between   -5 to -2.5   or   2.5 to 5
         //Note: Range max is exclusive so Random.Range(0,2) returns 0 or 1
-        //     if (Random.Range(0, 2) == 1) vect.y = Random.Range(2.5F, 5F);
-        //     else vect.y = -1 * Random.Range(2.5F, 5F);
-        vect.y = Random.Range(-5F, 5F);
+        if (Random.Range(0, 2) == 1) vect.y = Random.Range(2.5F, 5F); //A02
+        else vect.y = -1 * Random.Range(2.5F, 5F);  //A02
+       // vect.y = Random.Range(-5F, 5F); //A01
 
         //Moves planet to new x,y
         planet_rgb.position = vect;
         //planet_rgb.MovePosition(vect); //don't use to teleport. Use to manually move smoothly
+
+        inplay_bol = true;
     }
 
     public void startgame(bool reset,int newlocked_int)
     {
         if (reset)
         {
-            //if this changes, also change Planet Trigger
-            if (planet_rgb.position.x < 5)
+            //if this changes, also change startgame in planetreset
+            if (planet_rgb.position.x <= 13)
                 resetplanet();
 
             planetlocked_int = newlocked_int;
         }
-        Gravity_flt = 1;
+        Gravity_flt = 1f;
     }
 
     // Use this for initialization
@@ -117,8 +128,9 @@ public class Planet : MonoBehaviour
         Vector2 vect;
         int prevline_int;
 
-        allplanets_rgb = new Rigidbody2D[10];
+        ThePlayer_obj = GameObject.Find("ThePlayer");
         numofplanets_int = 10;
+        allplanets_rgb = new Rigidbody2D[numofplanets_int];
         for(int i=1; i<= numofplanets_int; i++)
         {
             allplanets_rgb[i-1] = GameObject.Find("Planet" + i).GetComponent<Rigidbody2D>();
@@ -129,7 +141,7 @@ public class Planet : MonoBehaviour
         // vect.x = -1;
         planet_rgb.velocity = vect;
         planetlocked_int = 1;
-        Gravity_flt = 1;
+        Gravity_flt = 1f;
         switch (name.Substring(6))
         {
             case "1":
@@ -171,6 +183,12 @@ public class Planet : MonoBehaviour
         else prevline_int = linenum_int - 1;
         if (linenum_int != 0)
             prevplanet_rgb = GameObject.Find("Planet" + prevline_int).GetComponent<Rigidbody2D>();
+        /* planetgravity_bol = new bool[10];
+         for (int i = 1; i <= numofplanets_int; i++)// used for A03
+         {
+             planetgravity_bol[i - 1] = false;
+         }*/
+        inplay_bol = true;
     }
 
     Vector2 SetMag(Vector2 vect, float mag)
@@ -183,24 +201,50 @@ public class Planet : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update ()
+    void FixedUpdate ()
     {
+        Vector2 vecttotal;
+        vecttotal.x = 0;
+        vecttotal.y = 0;
         //Debug.Log("Planet Update: " + this.name + "Planetlocked " +planetlocked_int);
-        Vector2 vect = allplanets_rgb[planetlocked_int-1].velocity; //Gravity Vector between ship and planet
-        
-        //Set's direction of the vector towards the planet
-        vect.x = allplanets_rgb[planetlocked_int-1].position.x-player_rgb.position.x ;
-        vect.y = allplanets_rgb[planetlocked_int-1].position.y - player_rgb.position.y;
+        Vector2 vect;// = allplanets_rgb[planetlocked_int - 1].velocity; //Gravity Vector between ship and planet
 
-        //Sets Magnitude of the vector to be "1". Make sure this value is the same as the value in Planet Class
-        vect = SetMag(vect, -Gravity_flt);
-        vect.y = 0;
-
-        //adds force to planet locked. If this isn't the planetlocked, then just copy the velocity of the locked planet
-        if (linenum_int == planetlocked_int)
-            planet_rgb.AddForce(vect);
+ //*******/DELETE after alpha testing********
+        if (GameObject.Find("constantspeed").GetComponent<alpha>().flag_bol)
+            planet_rgb.velocity = new Vector2(-4, 0);
         else
-            planet_rgb.velocity = allplanets_rgb[planetlocked_int - 1].velocity;
+        {
+            //adds force to planet locked. If this isn't the planetlocked, then just copy the velocity of the locked planet
+            if (linenum_int == planetlocked_int)
+            {
+                //Set's direction of the vector towards the planet
+                vect.x = allplanets_rgb[planetlocked_int - 1].position.x - player_rgb.position.x;
+                vect.y = allplanets_rgb[planetlocked_int - 1].position.y - player_rgb.position.y;
+
+                //Sets Magnitude of the vector to be "1". Make sure this value is the same as the value in Planet Class
+                vect = SetMag(vect, -Gravity_flt);
+                vect.y = 0;
+
+                planet_rgb.AddForce(vect);
+                /*A03
+                for (int i = 1; i <= numofplanets_int; i++)
+                {
+                    //Set's direction of the vector towards the planet
+                    vect.x = allplanets_rgb[i - 1].position.x - player_rgb.position.x;
+                    vect.y = allplanets_rgb[i - 1].position.y - player_rgb.position.y;
+
+                    //Sets Magnitude of the vector to be "1". Make sure this value is the same as the value in Planet Class
+                    vect = SetMag(vect, -Gravity_flt);
+                    vect.y = 0;
+
+                    if(ThePlayer_obj.GetComponent<PlayerController>().planetgravity_bol[i-1])
+                        vecttotal.x = vecttotal.x + vect.x;
+                }
+                planet_rgb.AddForce(vecttotal);*/
+            }
+            else
+                planet_rgb.velocity = allplanets_rgb[planetlocked_int - 1].velocity;
+        }
     }
 
     public void OnTriggerEnter2D(Collider2D other)
@@ -208,7 +252,6 @@ public class Planet : MonoBehaviour
         PlanetReset trigger_plr;
 
         //Planet has hit the left side and resets
-        //if this changes, also change startgame
         if (other.name == "LeftSide")
         {
             resetplanet();
@@ -219,6 +262,25 @@ public class Planet : MonoBehaviour
             //Debug.Log(this.name + " just hit " + other.name);
             trigger_plr = GameObject.Find("ScoreTrigger").GetComponent<PlanetReset>();
             trigger_plr.stopgame();
+        }
+        //Planet has entered playing field
+        if (other.name == "planetin")
+        {
+            //Debug.Log(this.name + " just hit " + other.name);
+            GameObject.Find("ThePlayer").GetComponent<PlayerController>().planetin();
+            // trigger_plr.planetin(); // A01 SA02
+            //startgravity();
+
+        }
+        //Planet has entered playing field
+        if (other.name == "planetout")
+        {
+            //Debug.Log(this.name + " just hit " + other.name);
+            GameObject.Find("ThePlayer").GetComponent<PlayerController>().planetout();
+            //trigger_plr = GameObject.Find("ScoreTrigger").GetComponent<PlanetReset>();
+           // trigger_plr.planetout();
+            //stopgravity();
+            inplay_bol = false;
         }
     }
 }
