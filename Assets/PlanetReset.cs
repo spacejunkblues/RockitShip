@@ -79,7 +79,7 @@ public class PlanetReset : MonoBehaviour
         maxasteroids_int = 20;
         allasteroids_obj = new GameObject[maxasteroids_int];
         allasteroids_obj[0] = GameObject.Find("Asteroid1"); //Prime asteroid is in Zero spot
-        progression_flt = 1;    //spawns an asteroid every 1 second
+        progression_flt = 5;    //spawns an asteroid every 30 seconds
         delay_flt = 0;
 
     }
@@ -88,7 +88,7 @@ public class PlanetReset : MonoBehaviour
     void Update ()
     {
         delay_flt += Time.deltaTime;
-        if(delay_flt>progression_flt)   //iniately should create an asteroid after 1 second
+        if(delay_flt>progression_flt)   //iniately should create an asteroid after a "progression" amount of seconds.
         {
             CreateAsteroid();
             delay_flt = 0;
@@ -260,10 +260,10 @@ public class PlanetReset : MonoBehaviour
                 //Game Progression. Inscreases speed limit
                 ThePlayer_obj.GetComponent<PlayerController>().setspeedlimit(score_int/100 + 5);//A03 use 4, others use 5
             }
-            if (score_int > 100)
-                progression_flt = .5f; //creates an asteroid after .5 seconds (2 asteroids a second)
-            if (score_int > 200)
-                progression_flt = .25f;
+            if (score_int == 100)
+                progression_flt = progression_flt * .5f; //creates an asteroid after .5 seconds (2 asteroids a second)
+            if (score_int == 200)
+                progression_flt = progression_flt * .25f;
             // CreateAsteroid();
         }
     }

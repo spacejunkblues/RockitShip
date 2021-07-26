@@ -11,7 +11,7 @@ public class Planet : MonoBehaviour
     Rigidbody2D player_rgb;
     Rigidbody2D prevplanet_rgb; //the planet in front of the current one. Used to keep the order of planets
     public int planetlocked_int; //This is the planet that the ship is currently orbiting around
-    private float Gravity_flt;
+    public float Gravity_flt;
     private int numofplanets_int; //Number of planets
     private int linenum_int; //this is the planets number. 1,2,3, etc
 
@@ -21,13 +21,13 @@ public class Planet : MonoBehaviour
     {
         Vector2 vect;
         //Debug.Log("made it to "+this.name+ " with a linenum of " + linenum_int);
-        if(linenum_int==planetlocked_int)
-        {
-            Debug.Log("Boosting off " + this.name);
+      //  if(linenum_int==planetlocked_int)
+      //  {
+      //      Debug.Log("Boosting off " + this.name);
             vect.x = -power * Mathf.Cos(dir / 57.33f);//dividing by 57.33 turns degrees into radians
             vect.y = 0;
             planet_rgb.AddForce(vect);
-        }
+       // }
     }
 
     //turns off the gravitational field
@@ -82,6 +82,9 @@ public class Planet : MonoBehaviour
         random_flt = Random.Range(.3f, .6f);
         GetComponent<Transform>().localScale = new Vector3(random_flt, random_flt, 1);
 
+        //Set gravity based on size
+        Gravity_flt = random_flt * 5;
+
         //Sets X location of planet
         if (prevplanet_rgb.position.x < 10) vect.x = 11;
         else vect.x = prevplanet_rgb.position.x +  Random.Range(1F, 5F);
@@ -129,7 +132,7 @@ public class Planet : MonoBehaviour
         // vect.x = -1;
         planet_rgb.velocity = vect;
         planetlocked_int = 1;
-        Gravity_flt = 1;
+        Gravity_flt = 2;
         switch (name.Substring(6))
         {
             case "1":
@@ -175,32 +178,53 @@ public class Planet : MonoBehaviour
 
     Vector2 SetMag(Vector2 vect, float mag)
     {
+        /*
         float ratio = 0;
-        ratio = vect.magnitude / mag;
+        ratio= vect.magnitude / mag;
+        vect.x = vect.x / ratio;
+        vect.y = vect.y / ratio;*/
+
+        float factor = 0;
+        float gravity = 0;
+
+        //increases gravity the closer a planet is
+        factor = 1 / (vect.magnitude + 1);
+
+        //if the distance to the planet is zero, the factor will be one, mag will equal gravity
+        gravity = mag * factor;
+
+        //changes the magnitude to match the new gravity vector
+        float ratio = 0;
+        ratio = vect.magnitude / gravity;
         vect.x = vect.x / ratio;
         vect.y = vect.y / ratio;
+
         return vect;
     }
 
     // Update is called once per frame
-    void Update ()
+    void FixedUpdate ()
     {
         //Debug.Log("Planet Update: " + this.name + "Planetlocked " +planetlocked_int);
         Vector2 vect = allplanets_rgb[planetlocked_int-1].velocity; //Gravity Vector between ship and planet
-        
-        //Set's direction of the vector towards the planet
-        vect.x = allplanets_rgb[planetlocked_int-1].position.x-player_rgb.position.x ;
-        vect.y = allplanets_rgb[planetlocked_int-1].position.y - player_rgb.position.y;
 
-        //Sets Magnitude of the vector to be "1". Make sure this value is the same as the value in Planet Class
-        vect = SetMag(vect, -Gravity_flt);
-        vect.y = 0;
+        //calc gravity for all 10 planets
+        for (int i = 0; i < numofplanets_int - 1; i++)
+        {
+            //Set's direction of the vector towards the planet
+            vect.x = allplanets_rgb[i].position.x - player_rgb.position.x;
+            vect.y = allplanets_rgb[i].position.y - player_rgb.position.y;
 
-        //adds force to planet locked. If this isn't the planetlocked, then just copy the velocity of the locked planet
-        if (linenum_int == planetlocked_int)
-            planet_rgb.AddForce(vect);
-        else
-            planet_rgb.velocity = allplanets_rgb[planetlocked_int - 1].velocity;
+            //Sets Magnitude of the vector to be "1". Make sure this value is the same as the value in Planet Class
+            vect = SetMag(vect, -Gravity_flt);
+            vect.y = 0;
+
+            //adds force to planet locked. If this isn't the planetlocked, then just copy the velocity of the locked planet
+            if (linenum_int == 1)
+                planet_rgb.AddForce(vect);
+            else
+                planet_rgb.velocity = allplanets_rgb[0].velocity;
+        }
     }
 
     public void OnTriggerEnter2D(Collider2D other)

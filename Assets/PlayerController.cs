@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
     private int nogravnum_int; //the planet that was just "unlocked"
     private int speedlimit_int;
     AudioSource boost_aud;
+    private bool boosting_bol;
 
     public void setspeedlimit(int speed)
     {
@@ -36,22 +37,32 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
     {
         Vector2 vect;
 
-        vect.x = 0;
-        vect.y = 200*Mathf.Sin(tilt_int*20/57.33f);//dividing by 57.33 turns degrees into radians
-        player_rgb.AddForce(vect);
-        allplanets_obj[planetlocked_int-1].GetComponent<Planet>().Boost(tilt_int*20,200);
-        boost_aud.Play();
+        if (!paused_bol)
+        {
+            vect.x = 0;
+            vect.y = 200 * Mathf.Sin(tilt_int * 20 / 57.33f);//dividing by 57.33 turns degrees into radians
+            player_rgb.AddForce(vect);
+            allplanets_obj[0].GetComponent<Planet>().Boost(tilt_int * 20, 200);
+            boost_aud.Play();
+        }
+    }
+    public void SetBoostflag(bool boosting)
+    {
+        boosting_bol = boosting;
     }
 
     public void Boost(int power)
     {
         Vector2 vect;
 
-        vect.x = 0;
-        vect.y = power * Mathf.Sin(tilt_int * 20 / 57.33f);//dividing by 57.33 turns degrees into radians
-        player_rgb.AddForce(vect);
-        allplanets_obj[planetlocked_int - 1].GetComponent<Planet>().Boost(tilt_int * 20, power);
-        boost_aud.Play();
+        if (!paused_bol)
+        {
+            vect.x = 0;
+            vect.y = power * Mathf.Sin(tilt_int * 20 / 57.33f);//dividing by 57.33 turns degrees into radians
+            player_rgb.AddForce(vect);
+            allplanets_obj[planetlocked_int - 1].GetComponent<Planet>().Boost(tilt_int * 20, power);
+            boost_aud.Play();
+        }
     }
 
     //this can be used in place of Boost
@@ -139,6 +150,7 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
             player_rgb.rotation = 0;
             player_rgb.freezeRotation = false;
             settilt(0);
+            boosting_bol = false;
 
             //zero's out any velocitys that may be been received from a crash
             vect.x = 0;
@@ -160,13 +172,14 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
         paused_bol = false;
         planetlocked_int = 1;
         nogravnum_int = 0; //zero means all gravity is working properly
-        speedlimit_int = 5;
+        speedlimit_int = 20; //5?
         boost_aud = GetComponent<AudioSource>();
+        boosting_bol = false;
 
         //init missiles
-       // maxmissiles_int = 6;//6 gives us 5 missiles since index 0 is reserved for the primary missile off screen
-       // allmissiles_obj = new GameObject[6];
-       // allmissiles_obj[0] = GameObject.Find("Missile");
+        // maxmissiles_int = 6;//6 gives us 5 missiles since index 0 is reserved for the primary missile off screen
+        // allmissiles_obj = new GameObject[6];
+        // allmissiles_obj[0] = GameObject.Find("Missile");
 
         //init planets
         numofplanets_int = 10;
@@ -186,10 +199,27 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
     //Vector magnitude changes to "mag" value
     Vector2 SetMag(Vector2 vect,float mag)
     {
+        /*
         float ratio = 0;
         ratio= vect.magnitude / mag;
         vect.x = vect.x / ratio;
-        vect.y = vect.y / ratio;
+        vect.y = vect.y / ratio;*/
+
+        float factor = 0;
+        float gravity = 0;
+
+        //increases gravity the closer a planet is
+        factor = 1 / (vect.magnitude + 1);
+
+        //if the distance to the planet is zero, the factor will be one, mag will equal gravity
+        gravity = mag * factor;
+
+        //changes the magnitude to match the new gravity vector
+        float ratio = 0;
+        ratio = vect.magnitude / gravity;
+        vect.x = vect.x / ratio;
+        vect.y = vect.y / ratio; 
+
         return vect;
     }
 
@@ -228,13 +258,13 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
             }
         }
     }
-	
-	// Update is called once per frame
+
+    // Update is called once per frame
     // Used to simulate gravity
-	void Update () 
-	{
-        PointerEventData data1=null;
-        if (Input.GetKeyDown(KeyCode.UpArrow)|| Input.GetKeyDown(KeyCode.LeftArrow))
+    void Update()
+    {
+        PointerEventData data1 = null;
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow))
             MoveUp();
         if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow))
             MoveDown();
@@ -242,27 +272,36 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
             GameObject.Find("Boost").GetComponent<Boost>().OnPointerClick(data1);// Boost();
         if (Input.GetKeyDown(KeyCode.X))
             GameObject.Find("Fire").GetComponent<Blaster>().OnPointerClick(data1);
+    }
+
+    void FixedUpdate()
+    { 
         //Debug.Log("Input Update: " + this.name);
         Vector2 vect = player_rgb.velocity; //Gravity Vector between ship and planet
         Vector2 planetvect; //used to pass vector to planet
 
-        //Set's direction of the vector towards the planet
-        vect.x = allplanets_rgb[planetlocked_int-1].position.x-player_rgb.position.x ;
-        vect.y = allplanets_rgb[planetlocked_int-1].position.y-player_rgb.position.y;
-        
-        //Sets Magnitude of the vector to be "1". Make sure this value is the same as the value in Planet Class
-        vect=SetMag(vect, Gravity_flt);
-        vect.x = 0; //Gravity along the x-axis is acheived by moving all other objects the oppisite direction
+        //calc gravity for all 10 planets
+        for (int i = 0; i < numofplanets_int - 1; i++)
+        {
+            //Set's direction of the vector towards the planet
+            vect.x = allplanets_rgb[i].position.x - player_rgb.position.x;
+            vect.y = allplanets_rgb[i].position.y - player_rgb.position.y;
 
-        //Applies gravity
-        player_rgb.AddForce(vect);
+            //Sets Magnitude of the vector to be "1". Make sure this value is the same as the value in Planet Class
+            vect = SetMag(vect, allplanets_obj[i].GetComponent<Planet>().Gravity_flt);
+           // Debug.Log("Grav: " + allplanets_obj[i].GetComponent<Planet>().Gravity_flt);
+            vect.x = 0; //Gravity along the x-axis is acheived by moving all other objects the oppisite direction
+
+            //Applies gravity
+            player_rgb.AddForce(vect);
+        }
 
         //gets the current velocity vector of the player for speed control
         vect.y = player_rgb.velocity.y;
-        vect.x = allplanets_rgb[planetlocked_int - 1].velocity.x;
+        vect.x = allplanets_rgb[0].velocity.x;
         
-        //Sets a speed limit
-        if (vect.magnitude > speedlimit_int)
+        //Applies the speed limit
+        if (vect.magnitude > speedlimit_int )//No limit!!!
         {
             //standardizes the vect with a constant magnitude, and divides forces
             vect = SetMag(vect, 50);
@@ -272,8 +311,8 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
 
             //applies the force vector in the oppisite direction
             player_rgb.AddForce(-vect);
-            allplanets_rgb[planetlocked_int - 1].AddForce(-planetvect);
-            Debug.Log("Velocity : "+ allplanets_rgb[planetlocked_int - 1].velocity.x +"* *********Slow Down!********");
+            allplanets_rgb[0].AddForce(-planetvect);
+           // Debug.Log("Velocity : "+ allplanets_rgb[planetlocked_int - 1].velocity.x +"* *********Slow Down!********");
         }
 
         //Changes which planet's gravity field the ship is in. Switchs to next planet at halfway point.
