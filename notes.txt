@@ -1,0 +1,4 @@
+remove fire
+fix gameover
+add startscreen
+remove test buttons

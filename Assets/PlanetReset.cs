@@ -260,10 +260,10 @@ public class PlanetReset : MonoBehaviour
                 //Game Progression. Inscreases speed limit
                 ThePlayer_obj.GetComponent<PlayerController>().setspeedlimit(score_int/100 + 5);//A03 use 4, others use 5
             }
-            if (score_int == 100)
-                progression_flt = progression_flt * .5f; //creates an asteroid after .5 seconds (2 asteroids a second)
-            if (score_int == 200)
-                progression_flt = progression_flt * .25f;
+            if (score_int%100 == 0)
+                progression_flt = progression_flt * .8f; //creates more asteriods faster each 100 pionts
+           // if (score_int == 200)
+           //     progression_flt = progression_flt * .5f;
             // CreateAsteroid();
         }
     }
