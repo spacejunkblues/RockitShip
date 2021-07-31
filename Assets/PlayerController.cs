@@ -35,7 +35,8 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
     //Adds a force in the direction of the ship
     public void Boost()
     {
-        Vector2 vect;
+        Boost(200);
+        /*Vector2 vect;
 
         if (!paused_bol)
         {
@@ -44,7 +45,7 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
             player_rgb.AddForce(vect);
             allplanets_obj[0].GetComponent<Planet>().Boost(tilt_int * 20, 200);
             boost_aud.Play();
-        }
+        }*/
     }
     public void SetBoostflag(bool boosting)
     {
@@ -60,7 +61,7 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
             vect.x = 0;
             vect.y = power * Mathf.Sin(tilt_int * 20 / 57.33f);//dividing by 57.33 turns degrees into radians
             player_rgb.AddForce(vect);
-            allplanets_obj[planetlocked_int - 1].GetComponent<Planet>().Boost(tilt_int * 20, power);
+            allplanets_obj[0].GetComponent<Planet>().Boost(tilt_int * 20, power);
             boost_aud.Play();
         }
     }
@@ -360,7 +361,7 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
         Vector2 vect = player_rgb.velocity;
 
         //This will increase the veloctiy upward
-        if (dir_chr == 'u' && tilt_int < 2)
+        if (dir_chr == 'u' && tilt_int < 3)//**Change back to 2
         {
             //computes the new velocity based on current tilt
           //  if (tilt_int == 1 || tilt_int == -2)
@@ -373,7 +374,7 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
             
         }
         //This will increase the velocity downward
-        else if (dir_chr == 'd' && tilt_int>-2)
+        else if (dir_chr == 'd' && tilt_int>-3) //**Change back to 2
         {
             //computes the new velocity based on current tilt
             //if (tilt_int == 2 || tilt_int == -1)
@@ -381,7 +382,7 @@ public class PlayerController : MonoBehaviour//, IPointerClickHandler
             //else if (tilt_int == 1 || tilt_int == 0)
             //    vect.y = vect.y - 1;
 
-            player_rgb.velocity = vect;     //pushs the new velocity into the actual spaceship
+            player_rgb.velocity = vect;     //pushs the new velocity into the actual spaceship 
             settilt(tilt_int - 1);        //records the new tilt position
         }
     }

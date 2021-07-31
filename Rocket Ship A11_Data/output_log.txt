@@ -1,0 +1,51 @@
+Initialize engine version: 5.4.1f1 (649f48bbbf0f)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: NVIDIA GeForce GTX 660 Ti (ID=0x1183)
+    Vendor:   NVIDIA
+    VRAM:     1970 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\Assembly-CSharp-firstpass.dll (this message is harmless)
+Loading C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\Assembly-CSharp-firstpass.dll into Unity Child Domain
+Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+- Completed reload, in  0.130 seconds
+Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship A11_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3280x1515 at -1360,-435
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 0.957295 ms
+Unloading 6 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 6.842415 ms
+
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 610.
+Total: 0.448285 ms (FindLiveObjects: 0.028320 ms CreateObjectMapping: 0.049752 ms MarkObjects: 0.364853 ms  DeleteObjects: 0.004847 ms)
+
+Planetlocked: 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Num: 1
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Num: 2
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Num: 3
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 42)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 621cc4 -> priority: 1 
+  Thread -> id: 621cc8 -> priority: 1 

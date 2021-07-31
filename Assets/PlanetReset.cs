@@ -26,6 +26,9 @@ public class PlanetReset : MonoBehaviour
    // private int planetsonfield_int; //when this number is 0, gravity turns off
     private float delay_flt; //used to create asteroids
     private float progression_flt; //used to create asteroids
+    bool dead_bol;
+    bool startmessage_bol;
+    bool planetmessage_bol;
 
     // Use this for initialization
     void Start ()
@@ -54,6 +57,7 @@ public class PlanetReset : MonoBehaviour
         replay_obj.SetActive(false);
         deathscreen_obj.SetActive(false);
         exit_obj.SetActive(false);
+        dead_bol = false;
 
         //init numbers
         numbers_spr = new Sprite[10];
@@ -93,7 +97,41 @@ public class PlanetReset : MonoBehaviour
             CreateAsteroid();
             delay_flt = 0;
         }
-	}
+    }
+    void OnGUI()
+    {
+        GUI.skin.box.wordWrap = true;
+        if (Screen.currentResolution.width <= 800)
+            GUI.skin.box.fontSize = 20;
+        else if (Screen.currentResolution.width < 1280)
+            GUI.skin.box.fontSize = 26;
+        else
+            GUI.skin.box.fontSize = 36;
+        GUI.skin.box.fontSize = Screen.currentResolution.width / 36;
+
+        //Don't die message
+        if (startmessage_bol)
+        {
+            GUI.Box(new Rect(Screen.width / 2 - Screen.width / 4, 3 * Screen.height / 8, Screen.width / 2, Screen.height / 8), "Dodge for Points");
+        }
+
+        //Planets have gravity message
+        if (planetmessage_bol)
+        {
+            GUI.Box(new Rect(Screen.width / 2 - Screen.width / 4, 3 * Screen.height / 8, Screen.width / 2, Screen.height / 8), "Don't let the planets suck you in!");
+        }
+
+        //This is the Game Over pop up
+        if (dead_bol)
+        {
+            GUI.skin.box.wordWrap = true;
+            GUI.skin.button.fontSize = 20;
+            if (GUI.Button(new Rect(Screen.width / 2 - Screen.width / 8, Screen.height / 2, Screen.width / 4, Screen.height / 6), "Replay Game") && Input.touchCount < 2)
+                StartGame();
+            if (GUI.Button(new Rect(Screen.width / 2 - Screen.width / 8, Screen.height / 2 + Screen.height / 6 + Screen.height / 24, Screen.width / 4, Screen.height / 6), "Exit Game") && Input.touchCount < 2)
+                Application.Quit();//remove for APPLE
+        }
+    }
 
     public void StartGame()
     {
@@ -105,11 +143,13 @@ public class PlanetReset : MonoBehaviour
         int i = 1;
         int newlocked_int = 1;
         AudioSource background_aud;
+        progression_flt = 5;    //spawns an asteroid every 30 seconds
 
         //get rid of death splash screen
-        replay_obj.SetActive(false);
+        //replay_obj.SetActive(false);
         deathscreen_obj.SetActive(false);
-        exit_obj.SetActive(false);
+        //exit_obj.SetActive(false);
+        dead_bol = false;
 
         //finds the left most planet and dubs it "first planet"
         for (i = 1; i <= 10; i++)
@@ -185,9 +225,10 @@ public class PlanetReset : MonoBehaviour
         Planet current_plt;
 
         //bring the death screen into view
-        replay_obj.SetActive(true);
+        //replay_obj.SetActive(true);
         deathscreen_obj.SetActive(true);
-        exit_obj.SetActive(true);
+        //exit_obj.SetActive(true);
+        dead_bol = true;
 
         //pause the game
         player_plc = ThePlayer_obj.GetComponent<PlayerController>();
@@ -247,7 +288,7 @@ public class PlanetReset : MonoBehaviour
     public void OnTriggerEnter2D(Collider2D other)
     {
         //some object has passed by the score trigger
-        if (this.name == "ScoreTrigger")
+        if (this.name == "ScoreTrigger" && !dead_bol)
         {
             //Planet has passed by the Player. Increase score
             if (other.name.Contains("Planet")&&other.name!=lastplanetscored_str||other.name.Contains("Asteroid"))

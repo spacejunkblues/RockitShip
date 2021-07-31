@@ -34,24 +34,24 @@ public class Boost : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData data)
     {
  //******** DELETE after ALPHA Testing**********************
-        if (!GameObject.Find("Hold").GetComponent<alpha>().flag_bol)
-        {
+     //   if (!GameObject.Find("Hold").GetComponent<alpha>().flag_bol)
+     //   {
             if (Charge > 50)
             {
                 Charge = Charge - 50;
-                GameObject.Find("ThePlayer").GetComponent<PlayerController>().Boost();
+                GameObject.Find("ThePlayer").GetComponent<PlayerController>().Boost(50);
                 booster_anm.SetBool("booston", true);
                 //boost_aud.Play();
                 boostofftime = 0; //starts counting
             }
-        }
+     //   }
     }
     
     public void BoostOn()
     {
  //******** DELETE after ALPHA Testing**********************
-        if(GameObject.Find("Hold").GetComponent<alpha>().flag_bol)
-            boosting = true;
+//        if(GameObject.Find("Hold").GetComponent<alpha>().flag_bol)
+  //          boosting = true;
         if (Charge > 0)
             booster_aud.Play();
     }
@@ -78,13 +78,13 @@ public class Boost : MonoBehaviour, IPointerClickHandler
         {
             if (Charge > 0)
             {
-                if (GameObject.Find("constantspeed").GetComponent<alpha>().flag_bol)
-                    ThePlayer_plc.stopgravity();
-                else
-                {
+             //   if (GameObject.Find("constantspeed").GetComponent<alpha>().flag_bol)
+               //     ThePlayer_plc.stopgravity();
+             //   else
+             //   {
                     ThePlayer_plc.Boost(8);//this will change velocity at a rate of 4 per sec
                     ThePlayer_plc.SetBoostflag(true);
-                }
+             //   }
                 booster_anm.SetBool("booston", true);
                 Charge -= 100f * Time.deltaTime;  //100 charges a second means you get 1 second of boost
                 if (Charge >= 100)
