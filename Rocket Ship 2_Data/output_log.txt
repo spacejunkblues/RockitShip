@@ -19,14 +19,14 @@ Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship 2_Data\
 Loading C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship 2_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship 2_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
 Loading C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship 2_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
-- Completed reload, in  0.086 seconds
+- Completed reload, in  0.048 seconds
 Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship 2_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\User\Documents\GitHub\RockitShip\Rocket Ship 2_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3280x1515 at -1360,-435
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 85.915459 ms
+UnloadTime: 1.696189 ms
 3
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
@@ -367,30 +367,22 @@ UnloadTime: 85.915459 ms
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
+click
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
 Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 4.124636 ms
+UnloadTime: 4.160613 ms
 
 Unloading 4 unused Assets to reduce memory usage. Loaded Objects now: 331.
-Total: 84.287399 ms (FindLiveObjects: 0.030617 ms CreateObjectMapping: 0.022962 ms MarkObjects: 31.269516 ms  DeleteObjects: 52.963276 ms)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.829979 ms
-
-Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 331.
-Total: 0.238048 ms (FindLiveObjects: 0.027300 ms CreateObjectMapping: 0.027810 ms MarkObjects: 0.176048 ms  DeleteObjects: 0.005357 ms)
-
-Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.430935 ms
-
-Unloading 1 unused Assets to reduce memory usage. Loaded Objects now: 331.
-Total: 0.204114 ms (FindLiveObjects: 0.018880 ms CreateObjectMapping: 0.022197 ms MarkObjects: 0.155637 ms  DeleteObjects: 0.006378 ms)
+Total: 0.398788 ms (FindLiveObjects: 0.043884 ms CreateObjectMapping: 0.035719 ms MarkObjects: 0.271216 ms  DeleteObjects: 0.045925 ms)
 
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.438335 ms
+UnloadTime: 0.870292 ms
 
 Unloading 31 unused Assets to reduce memory usage. Loaded Objects now: 719.
-Total: 0.584021 ms (FindLiveObjects: 0.033678 ms CreateObjectMapping: 0.040822 ms MarkObjects: 0.478902 ms  DeleteObjects: 0.030361 ms)
+Total: 1.453293 ms (FindLiveObjects: 0.106904 ms CreateObjectMapping: 0.073225 ms MarkObjects: 1.214734 ms  DeleteObjects: 0.056896 ms)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: ba8778 -> priority: 1 
-  Thread -> id: c43a1c -> priority: 1 
+  Thread -> id: 3fd75c -> priority: 1 
+  Thread -> id: 3fd760 -> priority: 1 
